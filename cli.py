@@ -29,6 +29,7 @@ def print_banner():
 def show_menu():
     print(C.GREEN + "\n[1] " + C.RESET + "Start ARP/MITM Monitoring")
     print(C.GREEN + "[2] " + C.RESET + "Run Traceroute Hop Analysis")
+    print(C.GREEN + "[3] " + C.RESET + "Start DNS Exfiltration Detection")
     print(C.RED + "[4] " + C.RESET + "Exit")
 
 def run_arp_monitor():
@@ -52,6 +53,14 @@ def run_traceroute():
     print()
     input(C.BOLD + "Press Enter to return to menu..." + C.RESET)
 
+def run_dns_monitor():
+    print(C.MAGENTA + "\nStarting DNS monitor... (Ctrl+C to return to menu)\n" + C.RESET)
+    try:
+        subprocess.run(["sudo", "python3", "core/dns_monitor.py"])
+    except KeyboardInterrupt:
+        pass
+    print(C.YELLOW + "\nReturning to main menu..." + C.RESET)
+
 def main():
     while True:
         print_banner()
@@ -66,6 +75,8 @@ def main():
             run_arp_monitor()
         elif choice == "2":
             run_traceroute()
+        elif choice == "3":
+            run_dns_monitor()
         elif choice == "4":
             print(C.RED + "\nExiting Network Path Integrity Tool. Stay safe." + C.RESET)
             sys.exit(0)
