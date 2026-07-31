@@ -5,15 +5,13 @@ import sys
 class C:
     RESET = "\033[0m"
     BOLD = "\033[1m"
-    CYAN = "\033[96m"
     GREEN = "\033[92m"
     RED = "\033[91m"
     YELLOW = "\033[93m"
-    MAGENTA = "\033[95m"
     BLUE = "\033[94m"
 
 def print_banner():
-    print(C.CYAN + C.BOLD + r"""
+    print(C.GREEN + C.BOLD + r"""
   _   _      _                      _      _____       _                 _ _
  | \ | |    | |                    | |    |_   _|     | |               (_) |
  |  \| | ___| |___      _____  _ __| | __    | |  _ __ | |_ ___  __ _ _ __ _| |_ _   _
@@ -24,16 +22,17 @@ def print_banner():
                                                                  |___/          |___/ 
 """ + C.RESET)
     print(C.YELLOW + "        Real-Time MITM & Network Path Integrity Analyzer" + C.RESET)
-    print(C.CYAN + "=" * 70 + C.RESET)
+    print(C.GREEN + "=" * 70 + C.RESET)
 
 def show_menu():
-    print(C.GREEN + "\n[1] " + C.RESET + "Start ARP/MITM Monitoring")
-    print(C.GREEN + "[2] " + C.RESET + "Run Traceroute Hop Analysis")
-    print(C.GREEN + "[3] " + C.RESET + "Start DNS Exfiltration Detection")
-    print(C.RED + "[4] " + C.RESET + "Exit")
+    print(C.BLUE + "\n[1] " + C.RESET + "Start ARP/MITM Monitoring")
+    print(C.BLUE + "[2] " + C.RESET + "Run Traceroute Hop Analysis")
+    print(C.BLUE + "[3] " + C.RESET + "Start DNS Exfiltration Detection")
+    print(C.BLUE + "[4] " + C.RESET + "View Correlated Threat Summary")
+    print(C.RED + "[5] " + C.RESET + "Exit")
 
 def run_arp_monitor():
-    print(C.MAGENTA + "\nStarting ARP monitor... (Ctrl+C to return to menu)\n" + C.RESET)
+    print(C.YELLOW + "\nStarting ARP monitor... (Ctrl+C to return to menu)\n" + C.RESET)
     try:
         subprocess.run(["sudo", "python3", "core/arp_monitor.py"])
     except KeyboardInterrupt:
@@ -51,15 +50,27 @@ def run_traceroute():
     print()
     subprocess.run(["python3", "core/traceroute_analyzer.py", target])
     print()
-    input(C.BOLD + "Press Enter to return to menu..." + C.RESET)
+    try:
+        input(C.BOLD + "Press Enter to return to menu..." + C.RESET)
+    except KeyboardInterrupt:
+        pass
 
 def run_dns_monitor():
-    print(C.MAGENTA + "\nStarting DNS monitor... (Ctrl+C to return to menu)\n" + C.RESET)
+    print(C.YELLOW + "\nStarting DNS monitor... (Ctrl+C to return to menu)\n" + C.RESET)
     try:
         subprocess.run(["sudo", "python3", "core/dns_monitor.py"])
     except KeyboardInterrupt:
         pass
     print(C.YELLOW + "\nReturning to main menu..." + C.RESET)
+
+def run_correlation_report():
+    print()
+    subprocess.run(["python3", "core/correlation_engine.py"])
+    print()
+    try:
+        input(C.BOLD + "Press Enter to return to menu..." + C.RESET)
+    except KeyboardInterrupt:
+        pass
 
 def main():
     while True:
@@ -78,6 +89,8 @@ def main():
         elif choice == "3":
             run_dns_monitor()
         elif choice == "4":
+            run_correlation_report()
+        elif choice == "5":
             print(C.RED + "\nExiting Network Path Integrity Tool. Stay safe." + C.RESET)
             sys.exit(0)
         else:

@@ -1,3 +1,4 @@
+from shared_log import log_alert
 import subprocess
 import re
 
@@ -23,9 +24,10 @@ def parse_line(line):
                 TRUSTED_GATEWAY_MAC = sender_mac
                 print(f"[BASELINE] Host {GATEWAY_IP} MAC recorded as {TRUSTED_GATEWAY_MAC}")
             elif sender_mac != TRUSTED_GATEWAY_MAC:
-                print(f"[ALERT] Possible ARP Spoofing detected!")
-                print(f"        {GATEWAY_IP} claimed by MAC {sender_mac}")
-                print(f"        Expected MAC: {TRUSTED_GATEWAY_MAC}")
+            	print(f"[ALERT] Possible ARP Spoofing detected!")
+            	print(f"        {GATEWAY_IP} claimed by MAC {sender_mac}")
+            	print(f"        Expected MAC: {TRUSTED_GATEWAY_MAC}")
+            	log_alert("ARP", "spoofing", f"{GATEWAY_IP} claimed by {sender_mac}, expected {TRUSTED_GATEWAY_MAC}")
         else:
             print(f"[INFO] ARP reply: {sender_ip} is at {sender_mac}")
 

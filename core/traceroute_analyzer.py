@@ -1,5 +1,6 @@
 import subprocess
 import re
+from shared_log import log_alert
 
 def run_traceroute(target):
     print(f"Running traceroute to {target}...\n")
@@ -28,6 +29,7 @@ def run_traceroute(target):
 
         if "* * *" in rest or rest.strip() == "* * *":
             print(f"Hop {hop_num}: [TIMEOUT] No response — possible filtering/anomaly")
+            log_alert("TRACEROUTE", "anomaly", f"Hop {hop_num} timeout - possible filtering")
             hops.append((hop_num, None, None))
             continue
 
@@ -41,6 +43,7 @@ def run_traceroute(target):
 
         if avg_time and avg_time > 100:
             print(f"Hop {hop_num}: {ip}   {avg_time:.1f} ms   [ANOMALY: high latency]")
+            log_alert("TRACEROUTE", "anomaly", f"Hop {hop_num} ({ip}) high latency: {avg_time:.1f}ms")
         else:
             print(f"Hop {hop_num}: {ip}   {avg_time:.1f} ms   [OK]" if avg_time else f"Hop {hop_num}: {ip}   [OK]")
 

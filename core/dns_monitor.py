@@ -1,3 +1,4 @@
+from shared_log import log_alert
 import subprocess
 import math
 import re
@@ -41,7 +42,7 @@ def check_virustotal(domain):
     try:
         url = f"https://www.virustotal.com/api/v3/domains/{domain}"
         headers = {"x-apikey": VT_API_KEY}
-        resp = requests.get(url, headers=headers, timeout=5)
+        resp = requests.get(url, headers=headers, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
             stats = data["data"]["attributes"]["last_analysis_stats"]
@@ -91,6 +92,7 @@ def check_domain(domain):
         print(f"        Base domain: {base_domain}")
         print(f"        Entropy: {entropy:.1f} (threshold: {ENTROPY_THRESHOLD})")
         print(f"        Frequency to base domain: {freq} queries in last {FREQ_WINDOW.seconds}s")
+        log_alert("DNS", "exfiltration", f"Domain {domain}, entropy {entropy:.1f}, freq {freq}")
 
         if base_domain not in checked_cache:
             print(f"        Checking VirusTotal...")
