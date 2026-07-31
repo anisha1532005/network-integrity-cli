@@ -2,3 +2,4 @@ venv/
 __pycache__/
 core/.env
 .env
+network_integrity_cli.egg-info/
